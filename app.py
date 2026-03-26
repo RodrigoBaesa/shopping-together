@@ -1,4 +1,4 @@
-from flask import Flask, render_template, session
+from flask import Flask, flash, redirect, render_template, request, session
 from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
@@ -29,9 +29,28 @@ class User(db.Model):
 def index():
     return render_template("index.html")
 
-@app.route('/register')
+@app.route('/login')
+def login():
+    return render_template("login.html")
+
+@app.route('/register', methods=["GET", "POST"])
 def register():
-    return render_template("register.html")
+
+    if request.method == "POST":
+        error = None
+
+        email = request.form.get("email")
+        password = request.form.get("password")
+        confirm_password = request.form.get("confirm-password")
+
+        if not email or not password or not confirm_password:
+            error = "Invalid Arguments"
+            flash(error)
+            print("erro")
+            return redirect("/register")
+
+    else:
+        return render_template("register.html")
 
 if __name__ == '__main__':
     with app.app_context():
