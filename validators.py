@@ -24,7 +24,7 @@ def validate_register(username, email, password, confirm_password, User):
         return "Password must contain at least 1 special character e.g., @#$%&*."
     
     if " " in password:
-        return "Space can't be in "
+        return "Spaces can't be in password"
     
     if password != confirm_password:
         return "Passwords don't match."

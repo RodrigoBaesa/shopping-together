@@ -1,7 +1,9 @@
+import bcrypt
 from flask import Flask, flash, redirect, render_template, request, session
 from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
+from validators import validate_register
 import os
 
 load_dotenv()
@@ -35,18 +37,39 @@ def login():
 
 @app.route('/register', methods=["GET", "POST"])
 def register():
-
     if request.method == "POST":
         error = None
 
+        username = request.form.get("username")
         email = request.form.get("email")
         password = request.form.get("password")
         confirm_password = request.form.get("confirm-password")
 
-        if not email or not password or not confirm_password:
-            error = "Invalid Arguments"
-            flash(error)
-            print("erro")
+        error = validate_register(username, email, password, confirm_password, User)
+        if error:
+            flash(error, "danger")
+
+            return redirect("/register")
+
+        password = password.encode("utf-8")
+        hash = bcrypt.hashpw(password, bcrypt.gensalt())
+        
+        new_user = User(
+            username=username,
+            email=email,
+            hash=hash,
+        )
+
+        try:
+            db.session.add(new_user)
+            db.session.commit()
+
+            flash("Account Created, login!", "success")
+            return redirect("/login")
+        
+        except Exception:
+            db.session.rollback()
+
             return redirect("/register")
 
     else:
