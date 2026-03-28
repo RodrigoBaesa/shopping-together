@@ -2,8 +2,10 @@ import bcrypt
 from flask import Flask, flash, redirect, render_template, request, session
 from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import select
+from sqlalchemy.orm import Session as sql_Session
 from dotenv import load_dotenv
-from validators import validate_register
+import validators as valid
 import os
 
 load_dotenv()
@@ -31,8 +33,28 @@ class User(db.Model):
 def index():
     return render_template("index.html")
 
-@app.route('/login')
+@app.route('/login', methods=["GET", "POST"])
 def login():
+    error = None
+
+    if request.method == "POST":
+        email = request.form.get("email")
+        password = request.form.get("password").encode("utf-8")
+
+        error = valid.validate_login(email, password, User)
+
+        if error:
+            flash(error, "danger")
+
+            return redirect("/login")
+        
+        else:
+            user = User.query.filter_by(email=email).one()
+            session["user_id"] = user.id
+
+            flash("Logged in!")
+
+            return redirect ("/")
     return render_template("login.html")
 
 @app.route('/register', methods=["GET", "POST"])
@@ -45,14 +67,14 @@ def register():
         password = request.form.get("password")
         confirm_password = request.form.get("confirm-password")
 
-        error = validate_register(username, email, password, confirm_password, User)
+        error = valid.validate_register(username, email, password, confirm_password, User)
         if error:
             flash(error, "danger")
 
             return redirect("/register")
 
         password = password.encode("utf-8")
-        hash = bcrypt.hashpw(password, bcrypt.gensalt())
+        hash = bcrypt.hashpw(password, bcrypt.gensalt()).decode("utf-8")
         
         new_user = User(
             username=username,
