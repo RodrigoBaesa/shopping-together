@@ -14,6 +14,9 @@ def index():
 
 @main.route('/login', methods=["GET", "POST"])
 def login():
+    if session:
+        return redirect("/")
+
     error = None
 
     if request.method == "POST":
@@ -35,8 +38,17 @@ def login():
             
     return render_template("login.html")
 
+@main.route('/logout')
+def logout():
+    session.clear()
+
+    return redirect("/login")
+
 @main.route('/register', methods=["GET", "POST"])
 def register():
+    if session:
+        return redirect("/")
+    
     if request.method == "POST":
         error = None
 
