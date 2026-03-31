@@ -14,7 +14,7 @@ def index():
 
 @main.route('/login', methods=["GET", "POST"])
 def login():
-    if session:
+    if session.get("user_id"):
         return redirect("/")
 
     error = None
@@ -41,12 +41,13 @@ def login():
 @main.route('/logout')
 def logout():
     session.clear()
-
-    return redirect("/login")
+    flash("Logged out!", "success")
+    
+    return redirect(url_for('main.login'))
 
 @main.route('/register', methods=["GET", "POST"])
 def register():
-    if session:
+    if session.get("user_id"):
         return redirect("/")
     
     if request.method == "POST":
