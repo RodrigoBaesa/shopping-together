@@ -8,14 +8,14 @@ body {
 .main {
     flex-grow: 1;
     display: flex;
-    background-image: linear-gradient(to top left, rgb(109, 24, 109) 10%, rgba(34, 33, 33, 0.993));
+    background-image: linear-gradient(to top left, rgb(238, 107, 0) 10%, rgba(75, 39, 0, 0.993));
 }
 
 .login-form {
     width: 100%;
     max-width: 500px;
     border-radius: 25px;
-    border: 1px solid #510080;
+    border: 1px solid #b66100;
     background-color: rgb(39, 39, 39);
     color: white;
 }
