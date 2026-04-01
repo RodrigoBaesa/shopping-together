@@ -24,6 +24,18 @@ def create_app():
     from app.routes import main as main_blueprint
     app.register_blueprint(main_blueprint)
 
+    @app.context_processor
+    def inject_family():
+        from flask import session
+        from app.models import Family, User
+        user_id = session.get('user_id')
+        if user_id:
+            user = User.query.get(user_id)
+            if user and user.family:
+                family = Family.query.get(user.family)
+                return {'family': family}
+        return {'family': None}
+
     with app.app_context():
         db.create_all()
 

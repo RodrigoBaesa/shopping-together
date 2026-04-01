@@ -44,13 +44,14 @@ def validate_register(username, email, password, confirm_password, User):
 def validate_login(email, password, User):
     try:
         user = User.query.filter_by(email=email).one_or_none()
-        user_hash = user.hash.encode("utf-8")
 
         if not email or not password:
             return "Invalid arguments."
         
         if not user:
             return "Couldn't find this email-password combination in our database."
+
+        user_hash = user.hash.encode("utf-8")
         
         if not bcrypt.checkpw(password, user_hash):
             return "Couldn't find this email-password combination in our database."

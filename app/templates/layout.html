@@ -22,9 +22,23 @@
             <li class="nav-item">
             <a class="nav-link active" aria-current="page" href="/">Home</a>
             </li>
+            {% if session.user_id %}
+            {% if not family %}
             <li class="nav-item">
-            <a class="nav-link" href="#">My Family</a>
+            <a class="nav-link" href="/create-family">Create Family</a>
             </li>
+            <li class="nav-item">
+            <a class="nav-link" href="/invites">Invites</a>
+            </li>
+            {% else %}
+            <li class="nav-item">
+            <a class="nav-link" href="/family/{{ family.id }}">{{ family.name }}</a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link" href="/invite-family">Invite Member</a>
+            </li>
+            {% endif %}
+            {% endif %}
             {% if not session.user_id %}
             <li class="nav-item">
             <a class="nav-link" href="/login">Login</a>

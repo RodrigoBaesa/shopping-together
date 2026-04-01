@@ -1,0 +1,78 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Create List
+{% endblock %}
+
+{% block main %}
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-10 col-md-8 m-5">
+                <h2 class="form-label text-white fw-semibold d-block text-center m-5">{{ title }}</h2>
+                
+                <form method="post">
+                    <div class="row g-2 mb-4">
+                        <div class="col-5">
+                            <label class="form-label fw-bold text-white mb-2">Product</label>
+                            <input type="text" class="form-control" placeholder="Product" name="product" required>
+                        </div>
+                        
+                        <div class="col-3">
+                            <label class="form-label fw-bold text-white mb-2">Quantity</label>
+                            <input type="number" class="form-control" placeholder="Quantity" name="quantity" required>
+                        </div>
+                        
+                        <div class="col-4">
+                            <label class="form-label fw-bold text-white mb-2">Brand</label>
+                            <input type="text" class="form-control" placeholder="Brand" name="brand" required>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-center m-4">
+                        <button type="submit" class="btn btn-warning">Insert Item</button>
+                    </div>
+                </form>
+                
+                <hr class="text-white mb-4">
+
+                {% for item in items %}
+                <div class="row g-2 align-items-center mb-2 list-item-row {% if item.bought %}text-decoration-line-through text-white-50{% else %}text-white{% endif %}" style="transition: all 0.2s;">
+    
+                    <div class="col-5">
+                        <div class="form-check m-0">
+                            <input class="form-check-input item-checkbox" type="checkbox" value="{{ item.id }}" id="item_{{ item.id }}" {% if item.bought %}checked{% endif %}>
+                            <label class="form-check-label" for="item_{{ item.id }}">
+                                {{ item.product }}
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="col-3">
+                        <span>{{ item.quantity }}</span>
+                    </div>
+                    
+                    <div class="col-4">
+                        <span>{{ item.brand }}</span>
+                    </div>
+                </div>
+                {% endfor %}
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.item-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const row = this.closest('.list-item-row');
+                    row.classList.toggle('text-decoration-line-through', this.checked);
+                    row.classList.toggle('text-white-50', this.checked);
+                    row.classList.toggle('text-white', !this.checked);
+                    
+                    fetch(`/item/${this.value}/toggle`, { method: 'POST' });
+                });
+            });
+        });
+    </script>
+{% endblock %}
