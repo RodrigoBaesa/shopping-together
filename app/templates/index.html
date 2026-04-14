@@ -6,17 +6,17 @@
 
 {% block main %}
     <div class="container">
-        <h1 class="text-white text-center mb-4">Family Shopping Lists</h1>
+        <h1 class="text-dark text-center m-4">Family Shopping Lists</h1>
         <div class="row">
             {% for list in lists %}
             <div class="col-md-4 mb-4">
                 <div class="card bg-dark text-white">
                     <div class="card-body">
                         <h5 class="card-title">{{ list.title or 'Untitled List' }}</h5>
-                        <p class="card-text">Created on {{ list.created_at.strftime('%Y-%m-%d') }}</p>
+                        <p class="created card-text"><small>Created on {{ list.created_at.strftime('%m/%d/%Y') }}</small></p>
                         <a href="/list/{{ list.id }}" class="btn btn-primary">View List</a>
                         <form method="post" action="/list/{{ list.id }}/delete" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this list?')">
-                            <button type="submit" class="btn btn-danger">Delete</button>
+                            <button type="submit" class="btn btn-danger ms-2">Delete</button>
                         </form>
                     </div>
                 </div>
@@ -24,7 +24,7 @@
             {% endfor %}
         </div>
         {% if not lists %}
-        <p class="text-white text-center">No lists yet. <a href="/create-list" style="color: rgb(255, 174, 0)">Create one!</a></p>
+        <p class="text-dark text-center">No lists yet. <a href="/create-list" style="color: rgb(247, 168, 0)">Create one!</a></p>
         {% endif %}
     </div>
 {% endblock %}
