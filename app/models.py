@@ -29,14 +29,16 @@ class Item (db.Model):
 class Family (db.Model):
     __tablename__ = "families"
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(40), nullable=True)
+    name = db.Column(db.String(40), nullable=False)
+    created_by = db.Column(db.Integer, db.ForeignKey("users.id"))
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
+    admin_id = db.Column(db.Integer, db.ForeignKey("users.id"))
 
 class Invite(db.Model):
     __tablename__ = 'invites'
     id = db.Column(db.Integer, primary_key=True)
     inviter_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    invitee_username = db.Column(db.String(100), nullable=False)
+    invited_username = db.Column(db.String(100), nullable=False)
     family_id = db.Column(db.Integer, db.ForeignKey('families.id'), nullable=False)
     status = db.Column(db.String(20), default='pending')
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())

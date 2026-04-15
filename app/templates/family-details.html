@@ -13,7 +13,9 @@
                 <h3 class="text-dark mb-3">Family Members</h3>
                 <ul class="list-group">
                     {% for member in members %}
-                    <li class="list-group-item bg-dark text-white">{{ member.username }}</li>
+                    <li class="list-group-item bg-dark text-white">{{ member.username }}
+                        {% if member.id == admin_id %}<span class="badge bg-warning text-dark ms-2">Admin</span>{% endif%}</li>
+                    
                     {% endfor %}
                 </ul>
             </div>

@@ -37,6 +37,8 @@ def create_family():
 
         new_family = Family(
             name=name,
+            created_by=user_id,
+            admin_id=user_id
         )
 
         try:
@@ -74,8 +76,8 @@ def invite_family():
             flash("Input must be between 1 and 40 characters.", "danger")
             return redirect("/invite-family")
 
-        invitee_username = name
-        invitee = User.query.filter_by(username=invitee_username).first()
+        invited_username = name
+        invitee = User.query.filter_by(username=invited_username).first()
         if not invitee:
             flash("User not found.", "danger")
             return redirect("/invite-family")
@@ -84,14 +86,14 @@ def invite_family():
             flash("User is already in a family.", "danger")
             return redirect("/invite-family")
 
-        existing_invite = Invite.query.filter_by(invitee_username=invitee_username, family_id=user.family, status='pending').first()
+        existing_invite = Invite.query.filter_by(invited_username=invited_username, family_id=user.family, status='pending').first()
         if existing_invite:
             flash("Invite already sent.", "danger")
             return redirect("/invite-family")
         
         new_invite = Invite(
             inviter_id=user.id,
-            invitee_username=invitee_username,
+            invited_username=invited_username,
             family_id=user.family
         )
 
@@ -278,7 +280,7 @@ def show_family(family_id):
         return redirect("/")
     
     members = User.query.filter_by(family=family_id).all()
-    return render_template("family-details.html", family=family, members=members)
+    return render_template("family-details.html", family=family, members=members, admin_id=family.admin_id)
 
 
 @main.route('/invites')
@@ -289,7 +291,7 @@ def view_invites():
         invites = Invite.query.filter_by(inviter_id=user.id).all()
         return render_template("invites.html", invites=invites, sent=True)
     else:
-        invites = Invite.query.filter_by(invitee_username=user.username, status='pending').all()
+        invites = Invite.query.filter_by(invited_username=user.username, status='pending').all()
         return render_template("invites.html", invites=invites, sent=False)
 
 
@@ -298,7 +300,7 @@ def view_invites():
 def accept_invite(invite_id):
     invite = Invite.query.get(invite_id)
     user = User.query.get(session["user_id"])
-    if not invite or invite.invitee_username != user.username or invite.status != 'pending':
+    if not invite or invite.invited_username != user.username or invite.status != 'pending':
         flash("Invalid invite.", "danger")
         return redirect("/invites")
     if user.family:
