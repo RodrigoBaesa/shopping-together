@@ -13,9 +13,24 @@
                 <h3 class="text-dark mb-3">Family Members</h3>
                 <ul class="list-group">
                     {% for member in members %}
-                    <li class="list-group-item bg-dark text-white">{{ member.username }}
-                        {% if member.id == admin_id %}<span class="badge bg-warning text-dark ms-2">Admin</span>{% endif%}</li>
-                    
+                    <li class="list-group-item bg-dark text-white d-flex justify-content-between align-items-center">
+                        
+                        <div class="d-flex align-items-center">
+                            <a>{{ member.username }}</a>
+                            {% if member.id == admin_id %}
+                            <span class="badge bg-warning text-dark ms-2">Admin</span>
+                            {% endif%}
+                        </div>
+
+                        {% if user_id == admin_id %}
+                        <div>
+                            <form method="post" action="/family/{{ family.id }}/kick/{{ member.id }}" class="d-inline" onsubmit="return confirm('Are you sure you want to kick this member?')">
+                                <button type="submit" class="btn btn-outline-danger">Kick</button>
+                            </form>
+                        </div>
+                        {% endif %}
+                        
+                    </li>
                     {% endfor %}
                 </ul>
             </div>

@@ -42,3 +42,6 @@ class Invite(db.Model):
     family_id = db.Column(db.Integer, db.ForeignKey('families.id'), nullable=False)
     status = db.Column(db.String(20), default='pending')
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
+    
+    inviter = db.relationship('User', foreign_keys=[inviter_id])
+    family = db.relationship('Family', foreign_keys=[family_id])

@@ -201,7 +201,6 @@ def delete_list(list_id):
         return redirect("/")
 
     try:
-        # Delete items first
         Item.query.filter_by(list_id=list_id).delete()
         db.session.delete(list)
         db.session.commit()
@@ -280,7 +279,35 @@ def show_family(family_id):
         return redirect("/")
     
     members = User.query.filter_by(family=family_id).all()
-    return render_template("family-details.html", family=family, members=members, admin_id=family.admin_id)
+    return render_template("family-details.html", family=family, members=members, admin_id=family.admin_id, user_id=user.id)
+
+@main.route('/family/<int:family_id>/kick/<int:member_id>', methods=["POST"])
+@login_required
+def kick_member(family_id, member_id):
+    family = Family.query.get(family_id)
+    if not family:
+        flash("Family not found.", "danger")
+        return redirect("/")
+    
+    user = User.query.get(session["user_id"])
+    if user.family != family_id or user.id != family.admin_id:
+        flash("Access denied.", "danger")
+        return redirect("/")
+    
+    member = User.query.get(member_id)
+    if not member or member.family != family_id:
+        flash("Member not found.", "danger")
+        return redirect(f"/family/{family_id}")
+    
+    try:
+        member.family = None
+        db.session.commit()
+        flash("Member kicked from family.", "success")
+    except Exception:
+        db.session.rollback()
+        flash("Something went wrong while kicking member. Try again.", "danger")
+
+    return redirect(f"/family/{family_id}")
 
 
 @main.route('/invites')

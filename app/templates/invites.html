@@ -9,16 +9,16 @@
         <div class="row justify-content-center">
             <div class="col-10 col-md-8 m-5">
                 {% if sent %}
-                <h2 class="text-white text-center mb-4">Sent Invites</h2>
+                <h2 class="text-dark text-center mb-4">Sent Invites</h2>
                 <ul class="list-group">
                     {% for invite in invites %}
-                    <li class="list-group-item bg-dark text-white">
-                        Invited {{ invite.invitee_username }} to {{ invite.family.name }} - Status: {{ invite.status }}
+                    <li class="list-group-item bg-dark text-dark">
+                        Invited {{ invite.invited_username }} to {{ invite.family.name }} - Status: {{ invite.status }}
                     </li>
                     {% endfor %}
                 </ul>
                 {% else %}
-                <h2 class="text-white text-center mb-4">Pending Invites</h2>
+                <h2 class="text-dark text-center mb-4">Pending Invites</h2>
                 {% if invites %}
                 <ul class="list-group">
                     {% for invite in invites %}
@@ -31,7 +31,7 @@
                     {% endfor %}
                 </ul>
                 {% else %}
-                <p class="text-white">No pending invites.</p>
+                <p class="text-dark">No pending invites.</p>
                 {% endif %}
                 {% endif %}
             </div>
